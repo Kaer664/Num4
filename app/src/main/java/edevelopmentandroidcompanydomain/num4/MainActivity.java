@@ -1,5 +1,6 @@
 package edevelopmentandroidcompanydomain.num4;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Intent intent=null;
         switch (i){
             case 0:
                 Log.i("TestNum",String.valueOf(i));
@@ -73,14 +75,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Log.i("TestNum",String.valueOf(i));
                 break;
             case 3:
+                intent=new Intent(this,DashBoardActivity.class);
+
                 Log.i("TestNum",String.valueOf(i));
                 break;
             case 4:
                 Log.i("TestNum",String.valueOf(i));
                 break;
             case 5:
+                intent=new Intent(this,CreativeActivity.class);
                 Log.i("TestNum",String.valueOf(i));
                 break;
         }
+        startActivity(intent);
     }
 }
