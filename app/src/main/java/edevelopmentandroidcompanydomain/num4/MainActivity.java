@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case 1:
                 Log.i("TestNum",String.valueOf(i));
+                intent=new Intent(this,ChoiceParkActivity.class);
+                startActivity(intent);
                 break;
             case 2:
                 Log.i("TestNum",String.valueOf(i));
