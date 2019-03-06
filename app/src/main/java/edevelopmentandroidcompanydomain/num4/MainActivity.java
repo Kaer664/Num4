@@ -1,6 +1,12 @@
 package edevelopmentandroidcompanydomain.num4;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,19 +14,21 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,SensorEventListener {
 
     private ListView listViewLeft;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sensorManager= (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         initLeft();
     }
 
@@ -89,4 +97,55 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         startActivity(intent);
     }
+
+    SensorManager sensorManager;//全局变量，方便取消操作
+    Sensor accelerometerSensor;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager= (SensorManager) getSystemService(Context.SENSOR_SERVICE);//获得系统服务
+        if (sensorManager!=null){
+            accelerometerSensor= sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);//获取加速度传感器
+            if (accelerometerSensor!=null){
+                sensorManager.registerListener(this,//listener对象，this表示此类已实现listener接口
+                        accelerometerSensor,        //监听的传感器
+                        SensorManager.SENSOR_DELAY_NORMAL);//传感器监听的频率
+            }
+        }
+    }
+
+
+    //传感器监听
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        //判断调用此方法的是什么传感器
+        int type=sensorEvent.sensor.getType();
+        if (type==Sensor.TYPE_ACCELEROMETER){
+            //获取三个方向的值
+            float[] values = sensorEvent.values;
+            float x = values[0];
+            float y = values[1];
+            float z = values[2];
+            //一般在这三个方向上速度达到40就达到晃动手机的状态，如果手机敏感度低，适当调低就行了
+            //速度不能低于10，因为z轴速度本身就是10
+            if (Math.abs(x)>19||Math.abs(y)>19||Math.abs(z)>19){
+                Toast.makeText(this,"摇一摇功能实现", Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(this,CreativeActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    //在onPause方法内取消注册
+    @Override
+    protected void onPause() {
+        sensorManager.unregisterListener(this);
+        super.onPause();
+    }
+
 }
