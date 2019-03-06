@@ -78,14 +78,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Log.i("TestNum",String.valueOf(i));
                 break;
             case 3:
+                intent=new Intent(this,DashBoardActivity.class);
+
                 Log.i("TestNum",String.valueOf(i));
                 break;
             case 4:
                 Log.i("TestNum",String.valueOf(i));
                 break;
             case 5:
+                intent=new Intent(this,CreativeActivity.class);
                 Log.i("TestNum",String.valueOf(i));
                 break;
         }
+        startActivity(intent);
     }
 }
